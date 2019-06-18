@@ -17,6 +17,8 @@ class CreateWordsTable extends Migration
             $table->bigIncrements('id');
             $table->string('longdate')->unique(); /* yyyy-mm-dd */
             $table->string('word');
+            $table->string('update_interval');
+            $table->string('update_iso');
             $table->json('word_meta');
             $table->json('lexi_stat_meta');
 

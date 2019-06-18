@@ -6,3 +6,24 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+button {
+  border-radius: 0 !important;
+}
+
+.Word {
+
+  .card-title:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  summary:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+
+  &:not(:last-child){
+    margin-bottom: 1rem;
+  }
+
+}

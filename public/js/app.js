@@ -1949,6 +1949,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1956,9 +1976,20 @@ __webpack_require__.r(__webpack_exports__);
   name: "CreateNewWord",
   data: function data() {
     return {
-      fields: {},
-      word_feedback: null,
-      date_feedback: null
+      fields: {
+        word: null,
+        longdate: null,
+        update: null
+      },
+      errors: {
+        longdate: null,
+        word: null,
+        update: null,
+        errors: null
+      },
+      success: {
+        message: null
+      }
     };
   },
   components: {
@@ -1966,14 +1997,33 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     onNewWord: function onNewWord() {
-      if (!this.fields.date) this.date_feedback = 'Please enter a date';else this.date_feedback = null;
-      if (!this.fields.word) this.word_feedback = 'Please enter a word';else this.word_feedback = null;
+      var _this = this;
 
-      if (this.fields.date && this.fields.word) {
-        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/word', this.fields).then(function (response) {
+      !this.fields.longdate ? this.errors.longdate = 'Please enter a date' : this.errors.longdate = null;
+      !this.fields.word ? this.errors.word = 'Please enter a word' : this.errors.word = null;
+      !this.fields.update ? this.errors.update = 'Please enter a number from 1 to 12' : this.errors.update = null;
+
+      if (this.fields.longdate && this.fields.word && this.fields.update) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/word', {
+          longdate: this.fields.longdate,
+          word: this.fields.word,
+          update: this.fields.update
+        }).then(function (response) {
+          // console.log(response.data.D);
           console.log(response);
+          /* Update success message */
+
+          _this.success.message = response.data.success;
+          /* Reset binded fields */
+
+          _this.fields.longdate = _this.fields.word = _this.fields.update = _this.errors.errors = null;
+          setTimeout(function () {
+            _this.success.message = null;
+          }, 1500);
         })["catch"](function (err) {
-          console.warn(err);
+          /* Update errors object to present erros */
+          _this.errors.errors = err.response.data.errors;
+          console.warn(err.response.data);
         });
       }
     }
@@ -40576,6 +40626,34 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-8 mx-auto mt-4" }, [
+        _vm.errors.errors
+          ? _c(
+              "div",
+              { staticClass: "alert-danger p-2 mb-2" },
+              _vm._l(_vm.errors.errors, function(err) {
+                return _c("div", [
+                  _c("span", { staticClass: "d-block" }, [
+                    _vm._v(
+                      _vm._s(
+                        err[0].replace(
+                          err[0],
+                          "This date has already been taken"
+                        )
+                      )
+                    )
+                  ])
+                ])
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.success.message
+          ? _c("div", { staticClass: "alert-success p-2 mb-2" }, [
+              _vm._v("\n        " + _vm._s(_vm.success.message) + "\n      ")
+            ])
+          : _vm._e(),
+        _vm._v(" "),
         _c(
           "form",
           {
@@ -40593,9 +40671,9 @@ var render = function() {
               [
                 _c("label", { attrs: { for: "longdate" } }, [_vm._v("Date")]),
                 _vm._v(" "),
-                this.date_feedback
+                this.errors.longdate
                   ? _c("div", { staticClass: "text-danger mb-2" }, [
-                      _vm._v(_vm._s(this.date_feedback))
+                      _vm._v(_vm._s(this.errors.longdate))
                     ])
                   : _vm._e(),
                 _vm._v(" "),
@@ -40604,15 +40682,14 @@ var render = function() {
                   attrs: {
                     type: "text",
                     name: "longdate",
-                    id: "longdate",
                     placeholder: "YYYY-MM-DD"
                   },
                   model: {
-                    value: _vm.fields.date,
+                    value: _vm.fields.longdate,
                     callback: function($$v) {
-                      _vm.$set(_vm.fields, "date", $$v)
+                      _vm.$set(_vm.fields, "longdate", $$v)
                     },
-                    expression: "fields.date"
+                    expression: "fields.longdate"
                   }
                 })
               ],
@@ -40622,9 +40699,9 @@ var render = function() {
             _c("div", { staticClass: "form-group" }, [
               _c("label", { attrs: { for: "word" } }, [_vm._v("Word")]),
               _vm._v(" "),
-              this.word_feedback
+              this.errors.word
                 ? _c("div", { staticClass: "text-danger mb-2" }, [
-                    _vm._v(_vm._s(this.word_feedback))
+                    _vm._v(_vm._s(this.errors.word))
                   ])
                 : _vm._e(),
               _vm._v(" "),
@@ -40638,7 +40715,12 @@ var render = function() {
                   }
                 ],
                 staticClass: "form-control",
-                attrs: { type: "text", id: "word", "aria-describedby": "Word" },
+                attrs: {
+                  type: "text",
+                  name: "word",
+                  placeholder: "Enter a word here",
+                  "aria-describedby": "Word"
+                },
                 domProps: { value: _vm.fields.word },
                 on: {
                   input: function($event) {
@@ -40646,6 +40728,45 @@ var render = function() {
                       return
                     }
                     _vm.$set(_vm.fields, "word", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "form-group" }, [
+              _c("label", { attrs: { for: "word" } }, [
+                _vm._v("Update Interval")
+              ]),
+              _vm._v(" "),
+              this.errors.update
+                ? _c("div", { staticClass: "text-danger mb-2" }, [
+                    _vm._v(_vm._s(this.errors.update))
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.fields.update,
+                    expression: "fields.update"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: {
+                  type: "number",
+                  placeholder: "Enter a number here to represent months.",
+                  name: "update",
+                  "aria-describedby": "Update Interval"
+                },
+                domProps: { value: _vm.fields.update },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.fields, "update", $event.target.value)
                   }
                 }
               })

@@ -11128,3 +11128,19 @@ a.text-dark:focus {
   }
 }
 
+button {
+  border-radius: 0 !important;
+}
+
+.Word .card-title:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.Word summary:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.Word:not(:last-child) {
+  margin-bottom: 1rem;
+}
+

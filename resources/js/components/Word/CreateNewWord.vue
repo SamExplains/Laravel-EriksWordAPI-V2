@@ -5,20 +5,40 @@
     <div class="row">
 
       <div class="col-8 mx-auto mt-4">
+
+        <div class="alert-danger p-2 mb-2" v-if="errors.errors">
+          <div v-for="err in errors.errors">
+            <span class="d-block">{{ err[0].replace(err[0], 'This date has already been taken') }}</span>
+          </div>
+        </div>
+
+        <div class="alert-success p-2 mb-2" v-if="success.message">
+          {{ success.message }}
+        </div>
+
+
         <!--<form method="POST" action="{{ route('word.store') }}">-->
         <form @submit.prevent="onNewWord">
           <!--@csrf-->
           <div class="form-group">
             <label for="longdate">Date</label>
-            <div class="text-danger mb-2" v-if="this.date_feedback">{{ this.date_feedback}}</div>
-            <flat-pickr v-model="fields.date" type="text" class="form-control bg-white" name="longdate" id="longdate" placeholder="YYYY-MM-DD"></flat-pickr>
+            <div class="text-danger mb-2" v-if="this.errors.longdate">{{ this.errors.longdate}}</div>
+            <flat-pickr v-model="fields.longdate" type="text" class="form-control bg-white" name="longdate" placeholder="YYYY-MM-DD"></flat-pickr>
           </div>
 
           <div class="form-group">
             <label for="word">Word</label>
-            <div class="text-danger mb-2" v-if="this.word_feedback">{{ this.word_feedback}}</div>
-            <input type="text" class="form-control" v-model="fields.word" id="word" aria-describedby="Word">
+            <div class="text-danger mb-2" v-if="this.errors.word">{{ this.errors.word}}</div>
+            <input type="text" class="form-control" v-model="fields.word" name="word" placeholder="Enter a word here" aria-describedby="Word">
           </div>
+
+          <div class="form-group">
+            <label for="word">Update Interval</label>
+            <div class="text-danger mb-2" v-if="this.errors.update">{{ this.errors.update}}</div>
+            <input type="number" class="form-control" placeholder="Enter a number here to represent months." v-model="fields.update" name="update" aria-describedby="Update Interval">
+          </div>
+
+
           <button type="submit" class="btn btn-primary">Add new word</button>
         </form>
       </div>
@@ -36,9 +56,13 @@
     name: "CreateNewWord",
     data () {
       return {
-        fields: {},
-        word_feedback: null,
-        date_feedback: null
+        fields: {
+          word: null,
+          longdate: null,
+          update: null,
+        },
+        errors: { longdate: null, word: null, update: null, errors: null },
+        success: { message: null }
       }
     },
     components: {
@@ -47,27 +71,37 @@
     methods: {
       onNewWord() {
 
-        if (!this.fields.date)
-          this.date_feedback = 'Please enter a date';
-        else
-          this.date_feedback = null;
+        (!this.fields.longdate) ? this.errors.longdate = 'Please enter a date' : this.errors.longdate = null;
 
-        if (!this.fields.word)
-          this.word_feedback = 'Please enter a word';
-        else
-          this.word_feedback = null;
+        (!this.fields.word) ? this.errors.word = 'Please enter a word' : this.errors.word = null;
 
-        if (this.fields.date && this.fields.word) {
+        (!this.fields.update) ? this.errors.update = 'Please enter a number from 1 to 12' : this.errors.update = null;
 
-          axios.post('/word', this.fields).then(response => {
-            console.log(response)
+        if (this.fields.longdate && this.fields.word && this.fields.update) {
+
+          axios.post('/word', {longdate: this.fields.longdate, word: this.fields.word, update: this.fields.update }).then(response => {
+            // console.log(response.data.D);
+            console.log(response);
+
+            /* Update success message */
+            this.success.message = response.data.success;
+
+            /* Reset binded fields */
+            this.fields.longdate = this.fields.word = this.fields.update = this.errors.errors = null;
+
+            setTimeout( () => {
+              this.success.message = null
+            }, 1500)
+
           }).catch( err => {
-            console.warn(err);
+
+            /* Update errors object to present erros */
+            this.errors.errors = err.response.data.errors;
+            console.warn(err.response.data);
+
           })
 
-
         }
-
 
       }
     }

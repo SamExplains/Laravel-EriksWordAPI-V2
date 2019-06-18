@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\WordStoreRequest;
 use App\Word;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Helpers\OxfordApi;
 
@@ -21,22 +23,6 @@ class WordController extends Controller
      */
     public function index()
     {
-
-//      $word = $this->oxford->callApi('afreet');
-//      $lexi = $this->oxford->callLexiStats('afreet');
-
-      /* TODO
-      1. Check against DB if word or date is not yet taken
-      2. Check to see if a word / lexi-stats actually exists before saving anything
-      */
-
-//      Word::create([
-//        'word' => 'afreet',
-//        'longdate' => '2019-01-02',
-//        'word_meta' => serialize($word),
-//        'lexi_stat_meta' => serialize($lexi)
-//      ]);
-
       return view('word.index')->with('word', Word::all());
     }
 
@@ -53,16 +39,38 @@ class WordController extends Controller
       return view('word._create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+  /**
+   * Store a newly created resource in storage.
+   *
+   * @param WordStoreRequest $request
+   * @return \Illuminate\Http\Response
+   */
+    public function store(WordStoreRequest $request)
     {
-        //
-      return response()->json([D => $request->all()]);
+
+      /* TODO
+      A. Validation rules
+      1. Check against DB if word or date is not yet taken -- Date checked via validation
+      2. Check to see if a word / lexi-stats actually exists before saving anything
+      */
+      $w = ucfirst($request->word);
+      $d = $request->longdate;
+      $update_int = $request->update;
+      $immutable = Carbon::now();
+      $mutable = explode(' ', $immutable->addMonths($update_int))[0];
+      $word_m = serialize($this->oxford->callApi($w));
+      $lexi_m = serialize($this->oxford->callLexiStats($w));
+
+      Word::create([
+        'word' => $w,
+        'longdate' => $d,
+        'word_meta' => $word_m,
+        'update_interval' => $update_int,
+        'update_iso' => $mutable,
+        'lexi_stat_meta' => $lexi_m
+      ]);
+
+      return response()->json(['success' => 'Word was successfully created.']);
     }
 
     /**
@@ -109,4 +117,16 @@ class WordController extends Controller
     {
         //
     }
+
+    public function test() {
+//      $word = json_decode($this->oxford->callApi('ace'), true);
+//      $lexi = json_decode($this->oxford->callLexiStats('ace'), true);
+//      $merged = array_merge_recursive($word, $lexi);
+
+
+//      $word = Word::where('id', 1)->get();
+//      return response()->json($merged);
+//      return response()->json($lexi);
+    }
+
 }
