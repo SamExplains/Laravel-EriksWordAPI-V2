@@ -21,8 +21,23 @@ class WordController extends Controller
      */
     public function index()
     {
-      dd($this->oxford->callApi('ace'));
-//      return view('word.index');
+
+//      $word = $this->oxford->callApi('afreet');
+//      $lexi = $this->oxford->callLexiStats('afreet');
+
+      /* TODO
+      1. Check against DB if word or date is not yet taken
+      2. Check to see if a word / lexi-stats actually exists before saving anything
+      */
+
+//      Word::create([
+//        'word' => 'afreet',
+//        'longdate' => '2019-01-02',
+//        'word_meta' => serialize($word),
+//        'lexi_stat_meta' => serialize($lexi)
+//      ]);
+
+      return view('word.index')->with('word', Word::all());
     }
 
     /**
@@ -33,6 +48,9 @@ class WordController extends Controller
     public function create()
     {
         //
+//      $word = Word::all()->first();
+//      return $word->unserialize();
+      return view('word._create');
     }
 
     /**
@@ -44,6 +62,7 @@ class WordController extends Controller
     public function store(Request $request)
     {
         //
+      return response()->json([D => $request->all()]);
     }
 
     /**

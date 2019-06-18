@@ -18,6 +18,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    {{-- Flatpickr --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
 </head>
 <body>
     <div id="app">
@@ -52,7 +58,7 @@
                             @endif
                         @else
                           <li class="nav-item">
-                            <a class="nav-link text-primary" href="{{ route('word.index') }}">Add New Word</a>
+                            <a class="nav-link text-primary" href="{{ route('word.create') }}">Add New Word</a>
                           </li>
 
                             <li class="nav-item dropdown">
