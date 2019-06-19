@@ -1,7 +1,6 @@
 <template>
-
   <div class="container">
-    <h4>Add New Word</h4>
+    <h4>Editing Word <span class="alert-primary p-2">{{ word.word }}</span></h4>
     <div class="row">
 
       <div class="col-8 mx-auto mt-4">
@@ -18,14 +17,14 @@
 
         <dates-taken :taken="this.taken"/>
 
-
         <!--<form method="POST" action="{{ route('word.store') }}">-->
         <form @submit.prevent="onNewWord">
           <!--@csrf-->
           <div class="form-group">
             <label for="longdate">Date</label>
             <div class="text-danger mb-2" v-if="this.errors.longdate">{{ this.errors.longdate}}</div>
-            <flat-pickr v-model="fields.longdate" type="text" class="form-control bg-white" name="longdate" placeholder="YYYY-MM-DD"></flat-pickr>
+            <div class="alert-warning p-1 font-weight-bold" v-model="fields.longdate">{{ fields.longdate }}</div>
+            <!--<flat-pickr v-model="fields.longdate" type="text" class="form-control bg-white" name="longdate" placeholder="YYYY-MM-DD"></flat-pickr>-->
           </div>
 
           <div class="form-group">
@@ -34,7 +33,7 @@
             <input type="text" class="form-control" v-model="fields.word" name="word" placeholder="Enter a word here" aria-describedby="Word">
           </div>
 
-          <button type="submit" class="btn btn-primary">Add new word</button>
+          <button type="submit" class="btn btn-primary">Update word</button>
         </form>
       </div>
     </div>
@@ -46,23 +45,26 @@
   import flatPickr from 'vue-flatpickr-component'
   import 'flatpickr/dist/flatpickr.css';
   import axios from "axios";
-  import DatesTaken from "./DatesTaken";
 
   export default {
-    name: "CreateNewWord",
-    props: ['taken'],
+    name: "EditWord",
+    props: ['word', 'taken'],
+    created() {
+      console.log(this.word);
+      this.fields.word = this.word.word;
+      this.fields.longdate = this.word.longdate;
+    },
     data () {
       return {
         fields: {
           word: null,
-          longdate: null,
+          longdate: null
         },
-        errors: { longdate: null, word: null, update: null, errors: null },
+        errors: { longdate: null, word: null, errors: null },
         success: { message: null }
       }
     },
     components: {
-      DatesTaken,
       flatPickr
     },
     methods: {
@@ -74,27 +76,28 @@
 
         if (this.fields.longdate && this.fields.word) {
 
-          axios.post('/word', {longdate: this.fields.longdate, word: this.fields.word }).then(response => {
-            // console.log(response.data.D);
-            console.log(response);
+          console.warn('Update word');
 
-            /* Update success message */
-            this.success.message = response.data.success;
+          axios.patch(`/word/${this.word.id}`, {longdate: this.fields.longdate, word: this.fields.word }).then( resp => {
 
-            /* Reset binded fields */
-            this.fields.longdate = this.fields.word = this.fields.update = this.errors.errors = null;
+              console.warn(resp);
 
-            setTimeout( () => {
-              this.success.message = null
-            }, 1500)
+              /* Update success message */
+              this.success.message = resp.data.success;
+
+              /* Reset binded fields */
+              this.fields.word = this.errors.errors = null;
+
+              setTimeout( () => {
+                this.success.message = null
+              }, 1500)
 
           }).catch( err => {
-
-            /* Update errors object to present erros */
+            console.warn(err.response);
             this.errors.errors = err.response.data.errors;
             console.warn(err.response.data);
-
           })
+
 
         }
 
@@ -102,8 +105,6 @@
     }
   }
 </script>
-
-<!--     $('#longdate').flatpickr({dateFormat: "Y-m-d" }); -->
 
 <style scoped>
 

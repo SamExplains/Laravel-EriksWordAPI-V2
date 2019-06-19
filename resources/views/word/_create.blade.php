@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
 
-<create-new-word />
+<create-new-word :taken="{{ $taken }}" />
 
 @endsection

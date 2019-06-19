@@ -1920,12 +1920,170 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _DatesTaken__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DatesTaken */ "./resources/js/components/Word/DatesTaken.vue");
 //
 //
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "CreateNewWord",
+  props: ['taken'],
+  data: function data() {
+    return {
+      fields: {
+        word: null,
+        longdate: null
+      },
+      errors: {
+        longdate: null,
+        word: null,
+        update: null,
+        errors: null
+      },
+      success: {
+        message: null
+      }
+    };
+  },
+  components: {
+    DatesTaken: _DatesTaken__WEBPACK_IMPORTED_MODULE_3__["default"],
+    flatPickr: vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0___default.a
+  },
+  methods: {
+    onNewWord: function onNewWord() {
+      var _this = this;
+
+      !this.fields.longdate ? this.errors.longdate = 'Please enter a date' : this.errors.longdate = null;
+      !this.fields.word ? this.errors.word = 'Please enter a word' : this.errors.word = null;
+
+      if (this.fields.longdate && this.fields.word) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/word', {
+          longdate: this.fields.longdate,
+          word: this.fields.word
+        }).then(function (response) {
+          // console.log(response.data.D);
+          console.log(response);
+          /* Update success message */
+
+          _this.success.message = response.data.success;
+          /* Reset binded fields */
+
+          _this.fields.longdate = _this.fields.word = _this.fields.update = _this.errors.errors = null;
+          setTimeout(function () {
+            _this.success.message = null;
+          }, 1500);
+        })["catch"](function (err) {
+          /* Update errors object to present erros */
+          _this.errors.errors = err.response.data.errors;
+          console.warn(err.response.data);
+        });
+      }
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "DatesTaken",
+  props: ['taken'],
+  created: function created() {
+    console.warn(this.taken);
+    this.unavailable = this.taken;
+  },
+  data: function data() {
+    return {
+      unavailable: null
+    };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-flatpickr-component */ "./node_modules/vue-flatpickr-component/dist/vue-flatpickr.min.js");
+/* harmony import */ var vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! flatpickr/dist/flatpickr.css */ "./node_modules/flatpickr/dist/flatpickr.css");
+/* harmony import */ var flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 //
 //
 //
@@ -1973,18 +2131,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: "CreateNewWord",
+  name: "EditWord",
+  props: ['word', 'taken'],
+  created: function created() {
+    console.log(this.word);
+    this.fields.word = this.word.word;
+    this.fields.longdate = this.word.longdate;
+  },
   data: function data() {
     return {
       fields: {
         word: null,
-        longdate: null,
-        update: null
+        longdate: null
       },
       errors: {
         longdate: null,
         word: null,
-        update: null,
         errors: null
       },
       success: {
@@ -2001,27 +2163,25 @@ __webpack_require__.r(__webpack_exports__);
 
       !this.fields.longdate ? this.errors.longdate = 'Please enter a date' : this.errors.longdate = null;
       !this.fields.word ? this.errors.word = 'Please enter a word' : this.errors.word = null;
-      !this.fields.update ? this.errors.update = 'Please enter a number from 1 to 12' : this.errors.update = null;
 
-      if (this.fields.longdate && this.fields.word && this.fields.update) {
-        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('/word', {
+      if (this.fields.longdate && this.fields.word) {
+        console.warn('Update word');
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.patch("/word/".concat(this.word.id), {
           longdate: this.fields.longdate,
-          word: this.fields.word,
-          update: this.fields.update
-        }).then(function (response) {
-          // console.log(response.data.D);
-          console.log(response);
+          word: this.fields.word
+        }).then(function (resp) {
+          console.warn(resp);
           /* Update success message */
 
-          _this.success.message = response.data.success;
+          _this.success.message = resp.data.success;
           /* Reset binded fields */
 
-          _this.fields.longdate = _this.fields.word = _this.fields.update = _this.errors.errors = null;
+          _this.fields.word = _this.errors.errors = null;
           setTimeout(function () {
             _this.success.message = null;
           }, 1500);
         })["catch"](function (err) {
-          /* Update errors object to present erros */
+          console.warn(err.response);
           _this.errors.errors = err.response.data.errors;
           console.warn(err.response.data);
         });
@@ -40625,50 +40785,265 @@ var render = function() {
     _c("h4", [_vm._v("Add New Word")]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-8 mx-auto mt-4" }, [
-        _vm.errors.errors
-          ? _c(
-              "div",
-              { staticClass: "alert-danger p-2 mb-2" },
-              _vm._l(_vm.errors.errors, function(err) {
-                return _c("div", [
-                  _c("span", { staticClass: "d-block" }, [
-                    _vm._v(
-                      _vm._s(
-                        err[0].replace(
-                          err[0],
-                          "This date has already been taken"
+      _c(
+        "div",
+        { staticClass: "col-8 mx-auto mt-4" },
+        [
+          _vm.errors.errors
+            ? _c(
+                "div",
+                { staticClass: "alert-danger p-2 mb-2" },
+                _vm._l(_vm.errors.errors, function(err) {
+                  return _c("div", [
+                    _c("span", { staticClass: "d-block" }, [
+                      _vm._v(
+                        _vm._s(
+                          err[0].replace(
+                            err[0],
+                            "This date has already been taken"
+                          )
                         )
                       )
-                    )
+                    ])
                   ])
-                ])
-              }),
-              0
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.success.message
-          ? _c("div", { staticClass: "alert-success p-2 mb-2" }, [
-              _vm._v("\n        " + _vm._s(_vm.success.message) + "\n      ")
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "form",
-          {
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.onNewWord($event)
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.success.message
+            ? _c("div", { staticClass: "alert-success p-2 mb-2" }, [
+                _vm._v("\n        " + _vm._s(_vm.success.message) + "\n      ")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("dates-taken", { attrs: { taken: this.taken } }),
+          _vm._v(" "),
+          _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.onNewWord($event)
+                }
               }
-            }
-          },
-          [
-            _c(
-              "div",
-              { staticClass: "form-group" },
-              [
+            },
+            [
+              _c(
+                "div",
+                { staticClass: "form-group" },
+                [
+                  _c("label", { attrs: { for: "longdate" } }, [_vm._v("Date")]),
+                  _vm._v(" "),
+                  this.errors.longdate
+                    ? _c("div", { staticClass: "text-danger mb-2" }, [
+                        _vm._v(_vm._s(this.errors.longdate))
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("flat-pickr", {
+                    staticClass: "form-control bg-white",
+                    attrs: {
+                      type: "text",
+                      name: "longdate",
+                      placeholder: "YYYY-MM-DD"
+                    },
+                    model: {
+                      value: _vm.fields.longdate,
+                      callback: function($$v) {
+                        _vm.$set(_vm.fields, "longdate", $$v)
+                      },
+                      expression: "fields.longdate"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-group" }, [
+                _c("label", { attrs: { for: "word" } }, [_vm._v("Word")]),
+                _vm._v(" "),
+                this.errors.word
+                  ? _c("div", { staticClass: "text-danger mb-2" }, [
+                      _vm._v(_vm._s(this.errors.word))
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.fields.word,
+                      expression: "fields.word"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "text",
+                    name: "word",
+                    placeholder: "Enter a word here",
+                    "aria-describedby": "Word"
+                  },
+                  domProps: { value: _vm.fields.word },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.fields, "word", $event.target.value)
+                    }
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+                [_vm._v("Add new word")]
+              )
+            ]
+          )
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "dropdown show mb-2" }, [
+    _c(
+      "a",
+      {
+        staticClass: "btn btn-dark dropdown-toggle",
+        staticStyle: { "border-radius": "0" },
+        attrs: {
+          href: "#",
+          role: "button",
+          id: "dropdownMenuLink",
+          "data-toggle": "dropdown",
+          "aria-haspopup": "true",
+          "aria-expanded": "false"
+        }
+      },
+      [_vm._v("\n    Dates taken\n  ")]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "dropdown-menu",
+        staticStyle: { overflow: "auto" },
+        attrs: { "aria-labelledby": "dropdownMenuLink" }
+      },
+      _vm._l(_vm.unavailable, function(una, index) {
+        return _c("a", { key: index, staticClass: "dropdown-item" }, [
+          _vm._v("\n      " + _vm._s(una) + " – " + _vm._s(index) + "\n    ")
+        ])
+      }),
+      0
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container" }, [
+    _c("h4", [
+      _vm._v("Editing Word "),
+      _c("span", { staticClass: "alert-primary p-2" }, [
+        _vm._v(_vm._s(_vm.word.word))
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col-8 mx-auto mt-4" },
+        [
+          _vm.errors.errors
+            ? _c(
+                "div",
+                { staticClass: "alert-danger p-2 mb-2" },
+                _vm._l(_vm.errors.errors, function(err) {
+                  return _c("div", [
+                    _c("span", { staticClass: "d-block" }, [
+                      _vm._v(
+                        _vm._s(
+                          err[0].replace(
+                            err[0],
+                            "This date has already been taken"
+                          )
+                        )
+                      )
+                    ])
+                  ])
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.success.message
+            ? _c("div", { staticClass: "alert-success p-2 mb-2" }, [
+                _vm._v("\n        " + _vm._s(_vm.success.message) + "\n      ")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("dates-taken", { attrs: { taken: this.taken } }),
+          _vm._v(" "),
+          _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.onNewWord($event)
+                }
+              }
+            },
+            [
+              _c("div", { staticClass: "form-group" }, [
                 _c("label", { attrs: { for: "longdate" } }, [_vm._v("Date")]),
                 _vm._v(" "),
                 this.errors.longdate
@@ -40677,109 +41052,69 @@ var render = function() {
                     ])
                   : _vm._e(),
                 _vm._v(" "),
-                _c("flat-pickr", {
-                  staticClass: "form-control bg-white",
-                  attrs: {
-                    type: "text",
-                    name: "longdate",
-                    placeholder: "YYYY-MM-DD"
-                  },
-                  model: {
-                    value: _vm.fields.longdate,
-                    callback: function($$v) {
-                      _vm.$set(_vm.fields, "longdate", $$v)
-                    },
-                    expression: "fields.longdate"
-                  }
-                })
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "word" } }, [_vm._v("Word")]),
-              _vm._v(" "),
-              this.errors.word
-                ? _c("div", { staticClass: "text-danger mb-2" }, [
-                    _vm._v(_vm._s(this.errors.word))
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
+                _c(
+                  "div",
                   {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.fields.word,
-                    expression: "fields.word"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: {
-                  type: "text",
-                  name: "word",
-                  placeholder: "Enter a word here",
-                  "aria-describedby": "Word"
-                },
-                domProps: { value: _vm.fields.word },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+                    staticClass: "alert-warning p-1 font-weight-bold",
+                    model: {
+                      value: _vm.fields.longdate,
+                      callback: function($$v) {
+                        _vm.$set(_vm.fields, "longdate", $$v)
+                      },
+                      expression: "fields.longdate"
                     }
-                    _vm.$set(_vm.fields, "word", $event.target.value)
-                  }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-group" }, [
-              _c("label", { attrs: { for: "word" } }, [
-                _vm._v("Update Interval")
+                  },
+                  [_vm._v(_vm._s(_vm.fields.longdate))]
+                )
               ]),
               _vm._v(" "),
-              this.errors.update
-                ? _c("div", { staticClass: "text-danger mb-2" }, [
-                    _vm._v(_vm._s(this.errors.update))
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.fields.update,
-                    expression: "fields.update"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: {
-                  type: "number",
-                  placeholder: "Enter a number here to represent months.",
-                  name: "update",
-                  "aria-describedby": "Update Interval"
-                },
-                domProps: { value: _vm.fields.update },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+              _c("div", { staticClass: "form-group" }, [
+                _c("label", { attrs: { for: "word" } }, [_vm._v("Word")]),
+                _vm._v(" "),
+                this.errors.word
+                  ? _c("div", { staticClass: "text-danger mb-2" }, [
+                      _vm._v(_vm._s(this.errors.word))
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.fields.word,
+                      expression: "fields.word"
                     }
-                    _vm.$set(_vm.fields, "update", $event.target.value)
+                  ],
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "text",
+                    name: "word",
+                    placeholder: "Enter a word here",
+                    "aria-describedby": "Word"
+                  },
+                  domProps: { value: _vm.fields.word },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.fields, "word", $event.target.value)
+                    }
                   }
-                }
-              })
-            ]),
-            _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-              [_vm._v("Add new word")]
-            )
-          ]
-        )
-      ])
+                })
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+                [_vm._v("Update word")]
+              )
+            ]
+          )
+        ],
+        1
+      )
     ])
   ])
 }
@@ -52936,7 +53271,9 @@ module.exports = function(module) {
 var map = {
 	"./components/App.vue": "./resources/js/components/App.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
-	"./components/Word/CreateNewWord.vue": "./resources/js/components/Word/CreateNewWord.vue"
+	"./components/Word/CreateNewWord.vue": "./resources/js/components/Word/CreateNewWord.vue",
+	"./components/Word/DatesTaken.vue": "./resources/js/components/Word/DatesTaken.vue",
+	"./components/Word/EditWord.vue": "./resources/js/components/Word/EditWord.vue"
 };
 
 
@@ -53262,6 +53599,144 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateNewWord_vue_vue_type_template_id_f5061218_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateNewWord_vue_vue_type_template_id_f5061218_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/DatesTaken.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/Word/DatesTaken.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true& */ "./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true&");
+/* harmony import */ var _DatesTaken_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatesTaken.vue?vue&type=script&lang=js& */ "./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _DatesTaken_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "34a79e6c",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Word/DatesTaken.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DatesTaken_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./DatesTaken.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/DatesTaken.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_DatesTaken_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true& ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/DatesTaken.vue?vue&type=template&id=34a79e6c&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DatesTaken_vue_vue_type_template_id_34a79e6c_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/EditWord.vue":
+/*!***************************************************!*\
+  !*** ./resources/js/components/Word/EditWord.vue ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditWord.vue?vue&type=template&id=2dab1644&scoped=true& */ "./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true&");
+/* harmony import */ var _EditWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditWord.vue?vue&type=script&lang=js& */ "./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _EditWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "2dab1644",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Word/EditWord.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./EditWord.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/EditWord.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./EditWord.vue?vue&type=template&id=2dab1644&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/EditWord.vue?vue&type=template&id=2dab1644&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditWord_vue_vue_type_template_id_2dab1644_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

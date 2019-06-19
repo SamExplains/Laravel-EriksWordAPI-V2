@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WordStoreRequest extends FormRequest
+class WordUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,19 +23,17 @@ class WordStoreRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-          'word' => 'required',
-//          'update' => 'required|integer',
-          'longdate' => 'required|unique:words',
-        ];
+      return [
+        'word' => 'required',
+//        'longdate' => 'required|unique:words',
+      ];
     }
 
-  public function messages()
-  {
-    return [
-      'word.required' => 'Word has already been taken',
-      'longdate.required'  => 'Date has already been taken',
-    ];
-  }
-
+    public function messages()
+    {
+      return [
+        'word.required' => 'Word has already been taken',
+        'longdate.required'  => 'Date has already been taken',
+      ];
+    }
 }

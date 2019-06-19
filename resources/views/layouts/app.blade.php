@@ -58,7 +58,19 @@
                             @endif
                         @else
                           <li class="nav-item">
-                            <a class="nav-link text-primary" href="{{ route('word.create') }}">Add New Word</a>
+                            <a class="nav-link text-primary" href="{{ route('word.create') }}">Dashboard</a>
+                          </li>
+
+                          <li class="nav-item">
+                            <div class="dropdown">
+                              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Word
+                              </button>
+                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item text-primary" href="{{ route('word.index') }}">Wordlist</a>
+                                <a class="dropdown-item text-primary" href="{{ route('word.create') }}">Add New Word</a>
+                              </div>
+                            </div>
                           </li>
 
                             <li class="nav-item dropdown">
@@ -89,6 +101,10 @@
         <main class="py-4">
             @yield('content')
         </main>
+
+        {{-- Custom scripts --}}
+        @yield('scripts')
+
     </div>
 </body>
 </html>

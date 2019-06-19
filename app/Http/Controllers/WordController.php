@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\WordStoreRequest;
+use App\Http\Requests\WordUpdateRequest;
 use App\Word;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -23,7 +24,7 @@ class WordController extends Controller
      */
     public function index()
     {
-      return view('word.index')->with('word', Word::all());
+      return view('word.index')->with('word', Word::all()->sortBy('longdate'));
     }
 
     /**
@@ -33,10 +34,8 @@ class WordController extends Controller
      */
     public function create()
     {
-        //
-//      $word = Word::all()->first();
-//      return $word->unserialize();
-      return view('word._create');
+      $dates_taken = Word::all()->sortBy('longdate')->pluck('longdate', 'word');
+      return view('word._create')->with('taken', $dates_taken);
     }
 
   /**
@@ -55,9 +54,7 @@ class WordController extends Controller
       */
       $w = ucfirst($request->word);
       $d = $request->longdate;
-      $update_int = $request->update;
-      $immutable = Carbon::now();
-      $mutable = explode(' ', $immutable->addMonths($update_int))[0];
+      $updated_iso = $this->returnUpdateIso($d);
       $word_m = serialize($this->oxford->callApi($w));
       $lexi_m = serialize($this->oxford->callLexiStats($w));
 
@@ -65,8 +62,8 @@ class WordController extends Controller
         'word' => $w,
         'longdate' => $d,
         'word_meta' => $word_m,
-        'update_interval' => $update_int,
-        'update_iso' => $mutable,
+        'update_interval' => 6,
+        'update_iso' => $updated_iso,
         'lexi_stat_meta' => $lexi_m
       ]);
 
@@ -93,6 +90,7 @@ class WordController extends Controller
     public function edit(Word $word)
     {
         //
+      return view('word._edit')->with('word', $word)->with('dates', Word::all()->sortBy('longdate')->pluck('longdate', 'word'));
     }
 
     /**
@@ -102,9 +100,29 @@ class WordController extends Controller
      * @param  \App\Word  $word
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Word $word)
+    public function update(WordUpdateRequest $request, Word $word)
     {
-        //
+
+      /* Words match */
+      if ($request->word === $word->word)
+        return response()->json(['success' => 'Nothing was updated.']);
+      else {
+        /* TODO
+          1. Check if words match
+          2. If not, pull new word details and update [ interval date, interval_iso, entries/lexical meta ]
+        */
+        $word_m = serialize($this->oxford->callApi($request->word));
+        $lexi_m = serialize($this->oxford->callLexiStats($request->word));
+
+        $word->update([
+          'word' => ucfirst($request->word),
+          'word_meta' => $word_m,
+          'lexi_stat_meta' => $lexi_m
+        ]);
+
+        return response()->json(['success' => 'Word was succesfully updated', 'word' => $word]);
+      }
+
     }
 
     /**
@@ -127,6 +145,15 @@ class WordController extends Controller
 //      $word = Word::where('id', 1)->get();
 //      return response()->json($merged);
 //      return response()->json($lexi);
+    }
+
+    private function returnUpdateIso($input_date) {
+      $immutable = explode('-', $input_date);
+      $y = $immutable[0];
+      $m = $immutable[1];
+      $day = $immutable[2];
+
+      return explode(' ', Carbon::createFromDate($y, $m, $day)->addMonths(6))[0];
     }
 
 }
