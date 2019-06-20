@@ -4,9 +4,11 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-12">
+    <update-interval ></update-interval>
+
+    <div class="col-4 mb-2">
       <a href="{{ route('word.create') }}">
-        <button class="btn btn-success btn-sm mb-2 float-right">+ Add new word</button>
+        <button class="btn btn-success btn-sm  float-right">+ Add new word</button>
       </a>
     </div>
 
@@ -95,5 +97,5 @@
         $(this).remove();
       });
     }
-  </script
+  </script>
 @endsection

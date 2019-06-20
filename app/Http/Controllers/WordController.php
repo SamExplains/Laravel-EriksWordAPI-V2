@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WordStoreRequest;
 use App\Http\Requests\WordUpdateRequest;
+use App\Interval;
 use App\Word;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ class WordController extends Controller
      */
     public function index()
     {
+      $interval = Interval::find(1);
+
       return view('word.index')->with('word', Word::all()->sortBy('longdate'));
     }
 
