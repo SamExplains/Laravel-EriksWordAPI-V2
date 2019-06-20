@@ -2304,6 +2304,8 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (res) {
         console.warn(res);
         /* Log success */
+
+        _this2.success.message = res.data.error;
       })["catch"](function (err) {
         /* Log errors */
         console.warn(err.response);

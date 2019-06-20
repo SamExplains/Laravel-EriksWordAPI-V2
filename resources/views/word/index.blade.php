@@ -4,6 +4,12 @@
 <div class="container">
   <div class="row">
 
+    <div class="col-12">
+      <a href="{{ route('word.create') }}">
+        <button class="btn btn-success btn-sm mb-2 float-right">+ Add new word</button>
+      </a>
+    </div>
+
       @foreach($word as $w)
 
         <div class="col-12 Word" id="Word-{{$w->id}}">

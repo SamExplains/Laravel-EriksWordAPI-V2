@@ -18,10 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/retrieve/{isodate}', 'WordController@returnStoredWord');
+
+/* Middleware applied at controller level for the Routes below */
 Route::post('/exists/{date}', 'WordController@checkIfDateExist')->name('exists');
 Route::post('/move/{word}', 'WordController@moveWord')->name('move');
-
-
 Route::resources([
   'word' => 'WordController',
 ]);

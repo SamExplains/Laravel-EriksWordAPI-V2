@@ -16,6 +16,7 @@ class WordController extends Controller
 
   public function __construct() {
     $this->oxford = new OxfordApi();
+    $this->middleware('auth')->except(['returnStoredWord']);
   }
 
   /**
@@ -176,6 +177,10 @@ class WordController extends Controller
    * @return \Illuminate\Http\JsonResponse
    */
     public function moveWord(Request $request, Word $word) {
+
+      if ($request->newDate === $word->longdate)
+        return response()->json(['error'=> 'Current date and new date match. No words were affected.']);
+
       Word::where('longdate', '=', $request->newDate)
         ->update([
           'word' => $word->word,
@@ -188,6 +193,40 @@ class WordController extends Controller
       $word->delete();
 
       return response()->json(['resp' => $request->newDate, 'word' => $word ]);
+    }
+
+    public function returnStoredWord(string $id_date) {
+
+      if ($id_date > '2019-01-01') {
+        $record = Word::where('longdate', '=', filter_var($id_date, FILTER_SANITIZE_STRING))->first();
+
+        /* Check for update word date
+          – If time, get updated word and re–update the words entry and lexi meta in DB.
+        */
+        if (!is_null($record) && $id_date >= $record->update_iso) {
+
+          $word_m = serialize($this->oxford->callApi($record->word));
+          $lexi_m = serialize($this->oxford->callLexiStats($record->word));
+
+          $record->update([
+            'word' => ucfirst($record->word),
+            'word_meta' => $word_m,
+            'lexi_stat_meta' => $lexi_m,
+            'update_interval' => 6,
+            'update_iso' => $this->returnUpdateIso($id_date)
+          ]);
+
+        }
+
+        if ($record)
+          return response()->json(['date' => $record->longdate, 'word' => $record->word, 'entry' => json_decode(unserialize($record->word_meta), true), 'lexical' => json_decode(unserialize($record->lexi_stat_meta), true) ]);
+        else
+          return response('No record found.', 404);
+
+      } else {
+        return response('Invalid date.', 404);
+      }
+
     }
 
 }

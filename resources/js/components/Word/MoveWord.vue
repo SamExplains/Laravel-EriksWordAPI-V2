@@ -88,6 +88,7 @@
           console.warn(res);
 
           /* Log success */
+          this.success.message = res.data.error;
 
         }).catch(err => {
 
