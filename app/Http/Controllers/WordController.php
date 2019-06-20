@@ -8,6 +8,7 @@ use App\Word;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Helpers\OxfordApi;
+use PhpParser\Node\Scalar\String_;
 
 class WordController extends Controller
 {
@@ -78,7 +79,8 @@ class WordController extends Controller
      */
     public function show(Word $word)
     {
-        //
+      $dates = Word::all()->sortBy('longdate')->pluck('longdate', 'word');
+      return view('word.show')->with('word', $word)->with('dates', $dates);
     }
 
     /**
@@ -125,15 +127,18 @@ class WordController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Word  $word
-     * @return \Illuminate\Http\Response
-     */
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  \App\Word $word
+   * @return \Illuminate\Http\Response
+   * @throws \Exception
+   */
     public function destroy(Word $word)
     {
         //
+      $word->delete();
+      return response()->json(['success' => 'Word has been deleted']);
     }
 
     public function test() {
@@ -154,6 +159,35 @@ class WordController extends Controller
       $day = $immutable[2];
 
       return explode(' ', Carbon::createFromDate($y, $m, $day)->addMonths(6))[0];
+    }
+
+    public function checkIfDateExist(string $date) {
+      $exits = Word::where('longdate', $date)->get();
+
+      if (count($exits) > 0)
+        return response()->json(['success'=> 'A word with the date '. $date .' already exists. Please confirm to overwrite the data.']);
+      else
+        return response()->json(['error'=> 'No word data exists for this date '. $date .'.']);
+    }
+
+  /**
+   * @param Request $request
+   * @param Word $word
+   * @return \Illuminate\Http\JsonResponse
+   */
+    public function moveWord(Request $request, Word $word) {
+      Word::where('longdate', '=', $request->newDate)
+        ->update([
+          'word' => $word->word,
+          'update_interval' => 6,
+          'update_iso' => $this->returnUpdateIso($request->newDate),
+//        'word_meta' => $word->word_meta,
+//          'lexi_stat_meta' => json_decode($word->lexi_stat_meta, true)
+      ]);
+
+      $word->delete();
+
+      return response()->json(['resp' => $request->newDate, 'word' => $word ]);
     }
 
 }

@@ -4,9 +4,9 @@
 <div class="container">
   <div class="row">
 
-      @foreach($word as $wKey => $w)
+      @foreach($word as $w)
 
-        <div class="col-12 Word" id="Word-{{$wKey}}">
+        <div class="col-12 Word" id="Word-{{$w->id}}">
           <div class="card">
 
           <div class="card-header">
@@ -52,8 +52,10 @@
                   Edit
                 </button>
               </a>
-              <button type="button" class="btn btn-secondary">Move</button>
-              <button type="button" class="btn btn-danger" onclick="deleteWord('{{ $wKey }}', event)">Delete {{ $wKey }}</button>
+              <a href="{{ route('word.show', $w) }}">
+                <button type="button" class="btn btn-secondary">Move</button>
+              </a>
+              <button type="button" class="btn btn-danger" onclick="deleteWord('{{ $w->id }}', event)">Delete</button>
             </div>
 
             {{--<a href="#" class="btn btn-primary">Go somewhere</a>--}}
@@ -71,10 +73,21 @@
 @section('scripts')
   <script type="application/javascript">
     function deleteWord(_word_id) {
+
+      $.ajax({
+        url: `/word/${_word_id}`,
+        method: 'DELETE',
+        dataType: 'JSON',
+        data: {_token: '{{@csrf_token()}}', _method: '{{ method_field('DELETE') }}', id: _word_id},
+        success: function (res) {
+          console.warn(res);
+        }
+      });
+
       const _selector = $(`#Word-${_word_id}`);
       _selector.fadeOut(800, () => {
         $(this).remove();
       });
     }
-  </script>
+  </script
 @endsection

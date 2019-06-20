@@ -18,7 +18,9 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-//Route::get('/show', 'WordController@test');
+Route::post('/exists/{date}', 'WordController@checkIfDateExist')->name('exists');
+Route::post('/move/{word}', 'WordController@moveWord')->name('move');
+
 
 Route::resources([
   'word' => 'WordController',
