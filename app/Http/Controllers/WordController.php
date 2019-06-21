@@ -10,10 +10,16 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Helpers\OxfordApi;
 use PhpParser\Node\Scalar\String_;
+use Symfony\Component\Panther as Panth;
+
 
 class WordController extends Controller
 {
   private $oxford = null;
+  private $data_errors = '{
+                        "entry_error": "No entry data exists for this word",
+                        "lexi_error": "No lexical stat data exists for this word"
+                      }';
 
   public function __construct() {
     $this->oxford = new OxfordApi();
@@ -39,7 +45,7 @@ class WordController extends Controller
      */
     public function create()
     {
-      $dates_taken = Word::all()->sortBy('longdate')->pluck('longdate', 'word');
+      $dates_taken = Word::all()->sortBy('longdate')->pluck('word', 'longdate');
       return view('word._create')->with('taken', $dates_taken);
     }
 
@@ -60,8 +66,16 @@ class WordController extends Controller
       $w = ucfirst($request->word);
       $d = $request->longdate;
       $updated_iso = $this->returnUpdateIso($d);
-      $word_m = serialize($this->oxford->callApi($w));
-      $lexi_m = serialize($this->oxford->callLexiStats($w));
+      $word_m = $this->oxford->callApi($w);
+      $lexi_m = null;
+
+      if (!is_null($word_m)) {
+        $word_m = serialize($word_m);
+        $lexi_m = serialize($this->oxford->callLexiStats($request->word));
+      } else {
+        $word_m = serialize($this->data_errors);
+        $lexi_m = serialize($this->data_errors);
+      }
 
       Word::create([
         'word' => $w,
@@ -83,7 +97,7 @@ class WordController extends Controller
      */
     public function show(Word $word)
     {
-      $dates = Word::all()->sortBy('longdate')->pluck('longdate', 'word');
+      $dates = Word::all()->sortBy('longdate')->pluck('word', 'longdate');
       return view('word.show')->with('word', $word)->with('dates', $dates);
     }
 
@@ -96,7 +110,7 @@ class WordController extends Controller
     public function edit(Word $word)
     {
         //
-      return view('word._edit')->with('word', $word)->with('dates', Word::all()->sortBy('longdate')->pluck('longdate', 'word'));
+      return view('word._edit')->with('word', $word)->with('dates', Word::all()->sortBy('longdate')->pluck('word', 'longdate'));
     }
 
     /**
@@ -117,13 +131,20 @@ class WordController extends Controller
           1. Check if words match
           2. If not, pull new word details and update [ interval date, interval_iso, entries/lexical meta ]
         */
-        $word_m = serialize($this->oxford->callApi($request->word));
-        $lexi_m = serialize($this->oxford->callLexiStats($request->word));
+        $word_m = $this->oxford->callApi($request->word);
+
+        if (!is_null($word_m)) {
+          $word->word_meta = serialize($word_m);
+          $word->lexi_stat_meta = serialize($this->oxford->callLexiStats($request->word));
+        } else {
+          $word->word_meta = serialize($this->data_errors);
+          $word->lexi_stat_meta = serialize($this->data_errors);
+        }
 
         $word->update([
           'word' => ucfirst($request->word),
-          'word_meta' => $word_m,
-          'lexi_stat_meta' => $lexi_m
+          'word_meta' => $word->word_meta,
+          'lexi_stat_meta' => $word->lexi_stat_meta
         ]);
 
         return response()->json(['success' => 'Word was succesfully updated', 'word' => $word]);
@@ -146,6 +167,17 @@ class WordController extends Controller
     }
 
     public function test() {
+//      $record = Word::where('longdate', '=', '2019-01-02')->first();
+//      dd($record);
+
+//      $word_m = serialize($this->oxford->callApi('yachty'));
+//      $word_m = $this->oxford->callApi('yachty');
+//
+//      if (is_object($word_m))
+//        dd(json_encode('{id: error}'));
+//      else
+//        dd($word_m);
+
 //      $word = json_decode($this->oxford->callApi('ace'), true);
 //      $lexi = json_decode($this->oxford->callLexiStats('ace'), true);
 //      $merged = array_merge_recursive($word, $lexi);
@@ -182,20 +214,31 @@ class WordController extends Controller
     public function moveWord(Request $request, Word $word) {
 
       if ($request->newDate === $word->longdate)
-        return response()->json(['error'=> 'Current date and new date match. No words were affected.']);
+        return response()->json(['success'=> 'Current date and new date match. No words were affected.']);
 
-      Word::where('longdate', '=', $request->newDate)
-        ->update([
-          'word' => $word->word,
+      $record = Word::where('longdate', '=', $request->newDate)->first();
+
+      if (!is_null($record)) {
+        $record->update([
+          'longdate' => $request->newDate,
           'update_interval' => 6,
           'update_iso' => $this->returnUpdateIso($request->newDate),
-//        'word_meta' => $word->word_meta,
-//          'lexi_stat_meta' => json_decode($word->lexi_stat_meta, true)
-      ]);
+          'word_meta' => $word->word_meta,
+          'lexi_stat_meta' => $word->lexi_stat_meta
+        ]);
+      } else {
+        Word::create([
+          'word' => $word->word,
+          'longdate' => $request->newDate,
+          'update_interval' => 6,
+          'update_iso' => $this->returnUpdateIso($request->newDate),
+          'word_meta' => $word->word_meta,
+          'lexi_stat_meta' => $word->lexi_stat_meta
+        ]);
+        $word->delete();
+      }
 
-      $word->delete();
-
-      return response()->json(['resp' => $request->newDate, 'word' => $word ]);
+      return response()->json(['resp' => $request->newDate, 'word' => $word, 'record' => $record, 'success' => 'Word was succesfully moved.' ]);
     }
 
     public function returnStoredWord(string $id_date) {
@@ -230,6 +273,15 @@ class WordController extends Controller
         return response('Invalid date.', 404);
       }
 
+    }
+
+    public function suggestNewWord() {
+      $siteUrl = "https://randomword.com";
+      $client = Panth\Client::createChromeClient();
+      $crawler = $client->request('GET', $siteUrl);
+      $word = $crawler->filter('#random_word')->getText();
+      return response()->json(['suggested' => $word ]);
+//      return response()->json(['suggested' => 'yachty' ]);
     }
 
 }

@@ -5,7 +5,7 @@
       Dates taken
     </a>
 
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="overflow: auto">
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="height: 20rem; overflow: auto !important;">
       <a class="dropdown-item" v-for="(una, index) in unavailable" :key="index">
         {{ una }} – {{ index }}
       </a>

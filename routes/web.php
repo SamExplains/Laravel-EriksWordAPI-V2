@@ -12,6 +12,7 @@
 */
 
 use App\Interval;
+use Symfony\Component\Panther as Panth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,7 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/retrieve/{isodate}', 'WordController@returnStoredWord');
-//Route::get('/test',function () {
+Route::get('/test', 'WordController@test');
 //  $interval = Interval::all()->first();
 //
 //  if (is_null($interval)) {
@@ -30,14 +31,13 @@ Route::get('/retrieve/{isodate}', 'WordController@returnStoredWord');
 //    ]);
 //    $interval = Interval::all()->first();
 //  }
-//
 //  dd($interval->interval);
-//
-//});
+
 
 /* Middleware applied at controller level for the Routes below */
 Route::post('/exists/{date}', 'WordController@checkIfDateExist')->name('exists');
 Route::post('/move/{word}', 'WordController@moveWord')->name('move');
+Route::get('/suggest-word', 'WordController@suggestNewWord')->name('suggest');
 Route::resources([
   'word' => 'WordController',
   'interval' => 'IntervalController',

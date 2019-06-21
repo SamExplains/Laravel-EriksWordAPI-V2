@@ -38,16 +38,16 @@
 
   export default {
     name: "UpdateInterval",
-    created() {
+    beforeCreate() {
 
       axios.get('/interval').then( resp => {
         console.warn('Got interval information!');
-        console.warn(resp);
+        // console.warn(resp);
         this.success = resp.data.interval.interval;
         this.interval = resp.data.interval;
       }).catch(err => {
-        console.warn(err);
-        console.warn(err.response.data);
+        // console.warn(err);
+        // console.warn(err.response.data);
       })
 
     },

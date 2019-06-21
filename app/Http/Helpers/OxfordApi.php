@@ -37,17 +37,11 @@ class OxfordApi
       }
       // if we made it here we need to alert the admin. Something went wrong
       // return the error
-      return (object)[
-        'success' => false,
-        'data' => null
-      ];
+      return null;
     } catch(\GuzzleHttp\Exception\TransferException $e) {
       // send email out something went wrong
       // return the error
-      return (object)[
-        'success' => false,
-        'data' => null
-      ];
+      return null;
     }
   }
 
@@ -62,17 +56,11 @@ class OxfordApi
       }
       // if we made it here we need to alert the admin. Something went wrong
       // return the error
-      return (object)[
-        'success' => false,
-        'data' => null
-      ];
+      return null;
     } catch(\GuzzleHttp\Exception\TransferException $e) {
       // send email out something went wrong
       // return the error
-      return (object)[
-        'success' => false,
-        'data' => null
-      ];
+      return null;
     }
 
 

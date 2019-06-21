@@ -1900,17 +1900,16 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "UpdateInterval",
-  created: function created() {
+  beforeCreate: function beforeCreate() {
     var _this = this;
 
     axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/interval').then(function (resp) {
-      console.warn('Got interval information!');
-      console.warn(resp);
+      console.warn('Got interval information!'); // console.warn(resp);
+
       _this.success = resp.data.interval.interval;
       _this.interval = resp.data.interval;
-    })["catch"](function (err) {
-      console.warn(err);
-      console.warn(err.response.data);
+    })["catch"](function (err) {// console.warn(err);
+      // console.warn(err.response.data);
     });
   },
   data: function data() {
@@ -2020,6 +2019,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _DatesTaken__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DatesTaken */ "./resources/js/components/Word/DatesTaken.vue");
+/* harmony import */ var _SuggestWord__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./SuggestWord */ "./resources/js/components/Word/SuggestWord.vue");
 //
 //
 //
@@ -2064,6 +2064,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 
@@ -2089,6 +2092,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   components: {
+    SuggestWord: _SuggestWord__WEBPACK_IMPORTED_MODULE_4__["default"],
     DatesTaken: _DatesTaken__WEBPACK_IMPORTED_MODULE_3__["default"],
     flatPickr: vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0___default.a
   },
@@ -2183,6 +2187,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(flatpickr_dist_flatpickr_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _SuggestWord__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SuggestWord */ "./resources/js/components/Word/SuggestWord.vue");
 //
 //
 //
@@ -2226,6 +2231,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+
 
 
 
@@ -2254,6 +2262,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   components: {
+    SuggestWord: _SuggestWord__WEBPACK_IMPORTED_MODULE_3__["default"],
     flatPickr: vue_flatpickr_component__WEBPACK_IMPORTED_MODULE_0___default.a
   },
   methods: {
@@ -2401,15 +2410,69 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("/move/".concat(this.word.id), {
         newDate: this.fields.newDate
       }).then(function (res) {
-        console.warn(res);
         /* Log success */
-
-        _this2.success.message = res.data.error;
+        _this2.success.message = res.data.success;
+        console.warn('Word has been moved');
+        console.warn(res.data); // console.warn(res.data.record);
       })["catch"](function (err) {
         /* Log errors */
         console.warn(err.response);
         console.warn(err.response.data);
-        _this2.errors.errors = [err.response, err.response.data];
+        _this2.errors.errors = [err.response, err.response.data.error];
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "SuggestWord",
+  data: function data() {
+    return {
+      scraped: null,
+      success: null
+    };
+  },
+  methods: {
+    suggestWord: function suggestWord() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/suggest-word').then(function (response) {
+        console.warn(response);
+        _this.scraped = response.data.suggested;
+        _this.success = "Word ".concat(response.data.suggested, " was generated");
+      })["catch"](function (error) {
+        console.warn('No suggestion');
       });
     }
   }
@@ -41137,6 +41200,8 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
+          _c("suggest-word"),
+          _vm._v(" "),
           _c("dates-taken", { attrs: { taken: this.taken } }),
           _vm._v(" "),
           _c(
@@ -41275,7 +41340,7 @@ var render = function() {
       "div",
       {
         staticClass: "dropdown-menu",
-        staticStyle: { overflow: "auto" },
+        staticStyle: { height: "20rem", overflow: "auto !important" },
         attrs: { "aria-labelledby": "dropdownMenuLink" }
       },
       _vm._l(_vm.unavailable, function(una, index) {
@@ -41349,6 +41414,8 @@ var render = function() {
                 _vm._v("\n        " + _vm._s(_vm.success.message) + "\n      ")
               ])
             : _vm._e(),
+          _vm._v(" "),
+          _c("suggest-word"),
           _vm._v(" "),
           _c("dates-taken", { attrs: { taken: this.taken } }),
           _vm._v(" "),
@@ -41569,6 +41636,77 @@ var render = function() {
         ],
         1
       )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm.success
+      ? _c("div", { staticClass: "alert-success p-2 mb-3" }, [
+          _vm._v("\n    " + _vm._s(_vm.success) + "\n  ")
+        ])
+      : _vm._e(),
+    _vm._v(" "),
+    _c("div", { staticClass: "input-group mb-3" }, [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.scraped,
+            expression: "scraped"
+          }
+        ],
+        staticClass: "form-control",
+        attrs: { type: "suggestion", placeholder: "example-word" },
+        domProps: { value: _vm.scraped },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.scraped = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("div", { staticClass: "input-group-append" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                return _vm.suggestWord($event)
+              }
+            }
+          },
+          [_vm._v("Suggest new word")]
+        )
+      ])
     ])
   ])
 }
@@ -53729,7 +53867,8 @@ var map = {
 	"./components/Word/CreateNewWord.vue": "./resources/js/components/Word/CreateNewWord.vue",
 	"./components/Word/DatesTaken.vue": "./resources/js/components/Word/DatesTaken.vue",
 	"./components/Word/EditWord.vue": "./resources/js/components/Word/EditWord.vue",
-	"./components/Word/MoveWord.vue": "./resources/js/components/Word/MoveWord.vue"
+	"./components/Word/MoveWord.vue": "./resources/js/components/Word/MoveWord.vue",
+	"./components/Word/SuggestWord.vue": "./resources/js/components/Word/SuggestWord.vue"
 };
 
 
@@ -54331,6 +54470,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MoveWord_vue_vue_type_template_id_44438ba5_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MoveWord_vue_vue_type_template_id_44438ba5_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/SuggestWord.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/Word/SuggestWord.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true& */ "./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true&");
+/* harmony import */ var _SuggestWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SuggestWord.vue?vue&type=script&lang=js& */ "./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SuggestWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "aa7e8a18",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/Word/SuggestWord.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SuggestWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./SuggestWord.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/SuggestWord.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SuggestWord_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/Word/SuggestWord.vue?vue&type=template&id=aa7e8a18&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SuggestWord_vue_vue_type_template_id_aa7e8a18_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

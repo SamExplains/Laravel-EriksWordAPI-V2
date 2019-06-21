@@ -15,6 +15,8 @@
           {{ success.message }}
         </div>
 
+        <suggest-word/>
+
         <dates-taken :taken="this.taken"/>
 
         <!--<form method="POST" action="{{ route('word.store') }}">-->
@@ -45,6 +47,7 @@
   import flatPickr from 'vue-flatpickr-component'
   import 'flatpickr/dist/flatpickr.css';
   import axios from "axios";
+  import SuggestWord from "./SuggestWord";
 
   export default {
     name: "EditWord",
@@ -65,6 +68,7 @@
       }
     },
     components: {
+      SuggestWord,
       flatPickr
     },
     methods: {

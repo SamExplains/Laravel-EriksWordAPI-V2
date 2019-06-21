@@ -85,10 +85,12 @@
       },
       moveWord() {
         axios.post(`/move/${this.word.id}`, { newDate: this.fields.newDate }).then( res => {
-          console.warn(res);
 
           /* Log success */
-          this.success.message = res.data.error;
+          this.success.message = res.data.success;
+          console.warn('Word has been moved');
+          console.warn(res.data);
+          // console.warn(res.data.record);
 
         }).catch(err => {
 
@@ -96,7 +98,7 @@
 
           console.warn(err.response);
           console.warn(err.response.data);
-          this.errors.errors = [err.response, err.response.data];
+          this.errors.errors = [err.response, err.response.data.error];
         });
       }
     }

@@ -28,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/word';
 
     /**
      * Create a new controller instance.
@@ -43,6 +43,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
       return view('auth.login');
+//      return view('auth.register');
     }
 
 

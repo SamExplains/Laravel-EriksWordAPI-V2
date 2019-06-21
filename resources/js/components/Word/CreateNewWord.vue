@@ -16,6 +16,8 @@
           {{ success.message }}
         </div>
 
+        <suggest-word />
+
         <dates-taken :taken="this.taken"/>
 
 
@@ -47,6 +49,7 @@
   import 'flatpickr/dist/flatpickr.css';
   import axios from "axios";
   import DatesTaken from "./DatesTaken";
+  import SuggestWord from "./SuggestWord";
 
   export default {
     name: "CreateNewWord",
@@ -62,6 +65,7 @@
       }
     },
     components: {
+      SuggestWord,
       DatesTaken,
       flatPickr
     },
