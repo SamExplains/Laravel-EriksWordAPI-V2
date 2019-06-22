@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Helpers\OxfordApi;
 use PhpParser\Node\Scalar\String_;
 use Symfony\Component\Panther as Panth;
+use Sunra\PhpSimple\HtmlDomParser;
 
 
 class WordController extends Controller
@@ -166,28 +167,6 @@ class WordController extends Controller
       return response()->json(['success' => 'Word has been deleted']);
     }
 
-    public function test() {
-//      $record = Word::where('longdate', '=', '2019-01-02')->first();
-//      dd($record);
-
-//      $word_m = serialize($this->oxford->callApi('yachty'));
-//      $word_m = $this->oxford->callApi('yachty');
-//
-//      if (is_object($word_m))
-//        dd(json_encode('{id: error}'));
-//      else
-//        dd($word_m);
-
-//      $word = json_decode($this->oxford->callApi('ace'), true);
-//      $lexi = json_decode($this->oxford->callLexiStats('ace'), true);
-//      $merged = array_merge_recursive($word, $lexi);
-
-
-//      $word = Word::where('id', 1)->get();
-//      return response()->json($merged);
-//      return response()->json($lexi);
-    }
-
     private function returnUpdateIso($input_date) {
       $immutable = explode('-', $input_date);
       $y = $immutable[0];
@@ -277,11 +256,45 @@ class WordController extends Controller
 
     public function suggestNewWord() {
       $siteUrl = "https://randomword.com";
-      $client = Panth\Client::createChromeClient();
-      $crawler = $client->request('GET', $siteUrl);
-      $word = $crawler->filter('#random_word')->getText();
+//      $siteUrl = "https://sampuccino.me";
+//      $client = Panth\Client::createChromeClient();
+//      $client = Panth\Client::createChromeClient();
+//      $crawler = $client->request('GET', $siteUrl);
+//      $word = $crawler->filter('#random_word')->getText();
+
+      $contents = file_get_contents($siteUrl);
+      preg_match("'<div id=\"shared_section\">(.*?)</div>'si", $contents, $matches);
+      $word = explode('<div id="random_word">', $matches[1])[1];
+
       return response()->json(['suggested' => $word ]);
 //      return response()->json(['suggested' => 'yachty' ]);
+    }
+
+
+  public function test() {
+
+      return $this->suggestNewWord();
+
+//    .heading-primary-title
+//      $record = Word::where('longdate', '=', '2019-01-02')->first();
+//      dd($record);
+
+//      $word_m = serialize($this->oxford->callApi('yachty'));
+//      $word_m = $this->oxford->callApi('yachty');
+//
+//      if (is_object($word_m))
+//        dd(json_encode('{id: error}'));
+//      else
+//        dd($word_m);
+
+//      $word = json_decode($this->oxford->callApi('ace'), true);
+//      $lexi = json_decode($this->oxford->callLexiStats('ace'), true);
+//      $merged = array_merge_recursive($word, $lexi);
+
+
+//      $word = Word::where('id', 1)->get();
+//      return response()->json($merged);
+//      return response()->json($lexi);
     }
 
 }

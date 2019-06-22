@@ -1,0 +1,8 @@
+RewriteEngine on
+
+DirectoryIndex /public/index.php
+Options -Indexes
+
+# Rewrite /public from url
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ /public/$1 [L,QSA]
